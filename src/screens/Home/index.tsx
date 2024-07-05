@@ -7,6 +7,10 @@ function Home() {
     console.debug("ADD!")
   }
 
+  function handleParticipantRemove(name: string) {
+    console.debug(`REMOVE! ${name}`)
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.eventName}>Nome do evento</Text>
@@ -28,10 +32,10 @@ function Home() {
         </TouchableOpacity>
       </View>
 
-      <Participant name="Rodolfo" />
-      <Participant name="Julin" />
-      <Participant name="Arnaldo" />
-    </View>
+      <Participant onRemove={handleParticipantRemove} name="Rodolfo" />
+      <Participant onRemove={handleParticipantRemove} name="Julin" />
+      <Participant onRemove={handleParticipantRemove} name="Arnaldo" />
+    </View> 
   )
 }
 

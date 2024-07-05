@@ -3,20 +3,21 @@ import { styles } from "./styles"
 
 type ParticipantProps = {
   name: string
+  onRemove: (name: string) => void
 }
 
-function Participant({ name }: ParticipantProps) {
+function Participant({ name, onRemove }: ParticipantProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{name}</Text>
 
       <TouchableOpacity
         style={styles.button}
-      // onPress={handleParticipantAdd}
+        onPress={() => onRemove(name)}
       >
         <Text style={styles.buttonText}> - </Text>
       </TouchableOpacity>
-    </View>
+    </View> 
   )
 }
 
