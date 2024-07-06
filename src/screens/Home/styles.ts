@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
     marginBottom: 42,
     marginTop: 36
   },
+  listEmptyText: {
+    color: "#fff"
+  }
 })
 
 export { styles };
