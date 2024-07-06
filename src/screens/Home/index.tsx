@@ -1,16 +1,22 @@
+import { useState } from "react"
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { Participant } from "../../components/Participant"
 import { styles } from "./styles"
 
 function Home() {
-  const participants = ["Besourinho", "Rodolfo", "Julin", "Arnaldo", "Leopoldo", "Marlom", "Gertrudina", "Rato Túlio", "Claudio", "Betino", "Pescoço", "Costela", "Ronaldo"]
+  const [participants, setParticipants] = useState(['Julin'])
+  const [participantName, setParticipantName] = useState("")
+
+  // const participants = ["Besourinho", "Rodolfo", "Julin", "Arnaldo", "Leopoldo", "Marlom", "Gertrudina", "Rato Túlio", "Claudio", "Betino", "Pescoço", "Costela", "Ronaldo"]
 
   function handleParticipantAdd() {
-    const nameAlreadyRegistered = participants.includes("Julin")
+    const nameAlreadyRegistered = participants.includes(participantName)
     if (nameAlreadyRegistered) {
       return Alert.alert("Participante existente", "Participante previamente cadastrado!",)
     }
 
+    setParticipants([...participants, participantName])
+    setParticipantName("")
     console.debug("ADD!")        
   }
 
@@ -39,6 +45,8 @@ function Home() {
           style={styles.input}
           placeholder="Nome do participante"
           placeholderTextColor="#6B6B6"
+          value={participantName}
+          onChangeText={setParticipantName}
         />
 
         <TouchableOpacity
