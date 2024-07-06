@@ -1,12 +1,13 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { Participant } from "../../components/Participant"
 import { styles } from "./styles"
 
 function Home() {
+  const participants = ["Besourinho", "Rodolfo", "Julin", "Arnaldo", "Leopoldo", "Marlom", "Gertrudina", "Rato Túlio", "Claudio", "Betino", "Pescoço", "Costela", "Ronaldo"]
+
   function handleParticipantAdd() {
     console.debug("ADD!")
   }
-
   function handleParticipantRemove(name: string) {
     console.debug(`REMOVE! ${name}`)
   }
@@ -32,9 +33,12 @@ function Home() {
         </TouchableOpacity>
       </View>
 
-      <Participant onRemove={handleParticipantRemove} name="Rodolfo" />
-      <Participant onRemove={handleParticipantRemove} name="Julin" />
-      <Participant onRemove={handleParticipantRemove} name="Arnaldo" />
+      <ScrollView>
+        {participants.map((participant) =>
+          <Participant onRemove={handleParticipantRemove} name={participant} key={`${participant}-${new Date().toTimeString()}`} />
+        )}
+      </ScrollView>
+
     </View> 
   )
 }
