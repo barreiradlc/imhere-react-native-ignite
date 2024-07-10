@@ -1,33 +1,57 @@
-import { useState } from "react"
+import axios from "axios"
+import { useEffect, useState } from "react"
 import { Alert, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { Participant } from "../../components/Participant"
 import { styles } from "./styles"
 
+const API_URL = "http://localhost:3000/participants"
+
+type ParticipantType = {
+  name: string
+  id: string
+}
+
 function Home() {
-  const [participants, setParticipants] = useState(['Julin'])
-  const [participantName, setParticipantName] = useState("")
+  const [participants, setParticipants] = useState<ParticipantType[]>()
+  const [participantName, setParticipantName] = useState("")  
 
-  // const participants = ["Besourinho", "Rodolfo", "Julin", "Arnaldo", "Leopoldo", "Marlom", "Gertrudina", "Rato Túlio", "Claudio", "Betino", "Pescoço", "Costela", "Ronaldo"]
 
-  function handleParticipantAdd() {
-    const nameAlreadyRegistered = participants.includes(participantName)
+  useEffect(() => {
+    refreshListOfParticipants()
+  }, [])
+
+  async function refreshListOfParticipants() {
+    try {
+      const { data } = await axios.get(API_URL);
+      setParticipants(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  async function handleParticipantAdd() {
+    const nameAlreadyRegistered = participants?.some(({ name }) => name === participantName)
     if (nameAlreadyRegistered) {
       return Alert.alert("Participante existente", "Participante previamente cadastrado!",)
     }
 
-    setParticipants([...participants, participantName])
-    setParticipantName("")
-    console.debug("ADD!")        
+    try {
+      await axios.post(API_URL, { name: participantName })
+      refreshListOfParticipants()
+    } catch (error) {
+
+    }
+
   }
 
-  function handleParticipantRemove(name: string) {
-    Alert.alert("Remover", `Remover participante ${name}?`, [
+  function handleParticipantRemove(id: string) {
+    Alert.alert("Remover", `Remover participante?`, [
       {
         text: "Sim",
-        onPress: () => {
-          const newParticipantsList = participants.filter((item) => item !== name)
-          setParticipants(newParticipantsList)
+        onPress: async () => {
+          await axios.delete(`${API_URL}/${id}`);
           Alert.alert("Deletado")
+          refreshListOfParticipants()
         }
       },
       {
@@ -35,7 +59,7 @@ function Home() {
         style: "cancel"
       }
     ])
-    console.debug(`REMOVE! ${name}`)
+    console.debug(`REMOVE! ${id}`)
   }
 
   return (
@@ -63,9 +87,9 @@ function Home() {
 
       <FlatList
         data={participants}
-        keyExtractor={item => item}
-        renderItem={({ item }) => (
-          <Participant onRemove={handleParticipantRemove} name={item} key={`${item}-${new Date().toTimeString()}`} />
+        keyExtractor={item => item.id}
+        renderItem={({ item: { name, id } }) => (
+          <Participant id={id} onRemove={handleParticipantRemove} name={name} key={`${name}-${new Date().toTimeString()}`} />
         )}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
